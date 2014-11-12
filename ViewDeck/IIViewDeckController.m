@@ -457,9 +457,15 @@ static NSTimeInterval durationToAnimate(CGFloat pointsToAnimate, CGFloat velocit
     return [NSArray arrayWithArray:result];
 }
 
+// Updated method for fixing behaviour in the start of ViewDeck
+// On iOS 7, the application had often used the flipped bounds, making the main view more narrow then it supposed to be
+// On iOS 8, the bounds are ok
 - (CGRect)referenceBounds {
     CGRect bounds = [[UIScreen mainScreen] bounds]; // portrait bounds
-    if (UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
+    
+    bool isOS7 = (NSFoundationVersionNumber <= NSFoundationVersionNumber_iOS_7_1 );
+    
+    if (isOS7 && UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
         bounds.size = CGSizeMake(bounds.size.height, bounds.size.width);
     }
     return bounds;
